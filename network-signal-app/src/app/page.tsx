@@ -201,12 +201,15 @@ export default function NetworkSignalApp() {
           </Card>
         )}
 
+        <CellTowerList />
+
+{/* 
         <SignalStrengthIndicator
           signalStrength={signalStrength}
           nearestTower={nearestTower}
           onRefresh={detector.getCurrentLocation}
           isTracking={detector.isTracking}
-        />
+        /> */}
 
         <InteractiveMap
           userLocation={userLocation}
@@ -229,7 +232,8 @@ export default function NetworkSignalApp() {
 
         <SafeLandmarksList safeLandmarks={safeLandmarks} />
 
-        <CellTowerList cellTowers={cellTowers} />
+        {/* <CellTowerList cellTowers={cellTowers} /> */}
+        
       </div>
     </div>
   )
