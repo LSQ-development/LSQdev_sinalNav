@@ -182,9 +182,16 @@ export default function NetworkSignalApp() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-100 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">SA Network Provider Portal</h1>
-          <p className="text-gray-600">Direct users to optimal cell towers across South Africa</p>
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold">
+            <span className="text-blue-600">my</span>
+            <span className="text-green-600">Telkom</span>
+          </h1>
+          <h1 className="text-lg font-medium">
+            <span>Welcome, Samuel</span>
+            <span className="ml-2 wave">👋</span>
+          </h1>
+          {/* <p className="text-gray-600">Direct users to optimal cell towers across South Africa</p> */}
         </div>
 
         {isHighTraffic && (
@@ -195,18 +202,12 @@ export default function NetworkSignalApp() {
                 <span className="font-medium">High Traffic Area Detected</span>
               </div>
               <p className="text-orange-700 text-sm mt-1">
-                Network congestion expected. Redirecting to less congested towers.
+                Network congestion expected. Redirecting to less congested
+                towers.
               </p>
             </CardContent>
           </Card>
         )}
-
-        <SignalStrengthIndicator
-          signalStrength={signalStrength}
-          nearestTower={nearestTower}
-          onRefresh={detector.getCurrentLocation}
-          isTracking={detector.isTracking}
-        />
 
         <InteractiveMap
           userLocation={userLocation}
@@ -216,6 +217,13 @@ export default function NetworkSignalApp() {
           signalStrength={signalStrength}
           nearestTower={nearestTower}
           isNavigating={isNavigating}
+        />
+
+        <SignalStrengthIndicator
+          signalStrength={signalStrength}
+          nearestTower={nearestTower}
+          onRefresh={detector.getCurrentLocation}
+          isTracking={detector.isTracking}
         />
 
         <NavigationPanel
@@ -232,5 +240,5 @@ export default function NetworkSignalApp() {
         <CellTowerList cellTowers={cellTowers} />
       </div>
     </div>
-  )
+  );
 }

@@ -86,12 +86,12 @@ export function InteractiveMap({
 
   return (
     <Card>
-      <CardHeader>
+      {/* <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5" />
           Interactive Coverage Map
         </CardTitle>
-      </CardHeader>
+      </CardHeader> */}
       <CardContent>
         <div className="h-96 rounded-lg overflow-hidden">
           {isMapLoaded && userLocation ? (
