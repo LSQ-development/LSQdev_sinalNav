@@ -185,7 +185,9 @@
     "LAC/TAC": 86,
     "Longitude": 18.630752563477,
     "Latitude": -33.930587768555,
-    "Range": 1000
+    "Range": 1000,
+    "Landmark": "Education Building",
+    "Congestion": "low"
   },
   {
     "Radio Type": "LTE",
@@ -194,7 +196,8 @@
     "LAC/TAC": 60104,
     "Longitude": 18.628005981445,
     "Latitude": -33.930587768555,
-    "Range": 1000
+    "Range": 1000,
+    "Landmark": "Law Clinic"
   },
   {
     "Radio Type": "GSM",
@@ -212,7 +215,9 @@
     "LAC/TAC": 601,
     "Longitude": 18.628064,
     "Latitude": -33.930388,
-    "Range": 1000
+    "Range": 1000,
+    "Landmark": "Education Building",
+    "Congestion": "low"
   },
   {
     "Radio Type": "LTE",
@@ -221,7 +226,9 @@
     "LAC/TAC": 417,
     "Longitude": 18.627319,
     "Latitude": -33.933334,
-    "Range": 1000
+    "Range": 1000,
+    "Landmark": "UWC Library (Mayibuye Archives)",
+    "Traffic": "medium"
   },
   {
     "Radio Type": "UMTS",
@@ -233,7 +240,6 @@
     "Range": 1000
   },
   {
-    "Label": "Prayer Room",
     "Radio Type": "LTE",
     "MCC": 655,
     "MNC": 2,

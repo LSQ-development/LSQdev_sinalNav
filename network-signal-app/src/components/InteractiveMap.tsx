@@ -3,9 +3,9 @@
 import L from "leaflet";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin } from "lucide-react";
+import { AlertTriangle, MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
-import { getClosestCellTowers } from "@/utils/helper";
+import { getBestCellTower, getClosestCellTowers } from "@/utils/helper";
 import { Tower } from "@/types/Tower";
 import { Location } from "@/types/Location";
 import { CellTowerCoverage } from "./CellTowerCoverage";
@@ -43,17 +43,17 @@ const redIcon = new L.Icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41],
+  shadowSize: [41, 41]
 });
 
-interface SafeLandmark {
-  id: string;
-  name: string;
-  type: string;
-  lat: number;
-  lng: number;
-  rating: number;
-}
+// interface SafeLandmark {
+//   id: string;
+//   name: string;
+//   type: string;
+//   lat: number;
+//   lng: number;
+//   rating: number;
+// }
 
 interface InteractiveMapProps {
   userLocation: Location | null;
@@ -75,6 +75,10 @@ export function InteractiveMap({
 }: InteractiveMapProps) {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [towers, setTowers] = useState<Tower[]>([]);
+
+  const [highTraffic, setHighTraffic] = useState<boolean>(false);
+
+  const [bestTower, setBestTower] = useState<Tower | null>(null);
 
   const getNavigationPath = () => {
     if (!userLocation || !recommendedLocation) return [];
@@ -100,9 +104,26 @@ export function InteractiveMap({
     initializeMap();
   }, []);
 
-  const getTowers = async () => {
+  const getAllTowers = async () => {
     const topTowers = await getClosestCellTowers();
     setTowers(topTowers);
+
+    if (!userLocation) {
+      console.log("Cannnot find user location");
+      return;
+    }
+
+    const best = getBestCellTower(
+      userLocation.lat,
+      userLocation.lng,
+      topTowers,
+      false
+    );
+    if (best) {
+      console.log("Best Recommended Tower:", best.Landmark);
+      setBestTower(best);
+      // Optionally update UI with best recommendation
+    }
   };
 
   return (
@@ -138,10 +159,10 @@ export function InteractiveMap({
                           <div>Load: {Math.round(loadPercentage)}%</div>
                         </div>
                       </Popup> */}
-                    </Marker>
-                  </div>
-                );
-              })}
+                      </Marker>
+                    </div>
+                  );
+                })}
 
               {/* User Location Marker */}
               <Marker
@@ -175,5 +196,6 @@ export function InteractiveMap({
         </button>
       </div>
     </Card>
+    </>
   );
 }
