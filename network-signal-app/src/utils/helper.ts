@@ -45,7 +45,7 @@ export const calculateDistance = (
   return R * c; // Distance in km
 };
 
-export const getClosestCellTowers = async (lat: number, lng: number) => {
+export const getClosestCellTowers = async (lat: string, lng: string) => {
   const res = await fetch(`/api/towers?lat=${lat}&lon=${lng}`);
 
   const data = await res.json();
