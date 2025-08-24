@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { NetworkSignalDetector } from "@/components/NetworkSignalDetector";
@@ -24,7 +24,6 @@ interface TrafficArea {
 }
 
 export default function NetworkSignalApp() {
-  // const [userLocation, setUserLocation] = useState<Location | null>(null);
   const [signalStrength, setSignalStrength] = useState(0);
   const [recommendedLocation, setRecommendedLocation] =
     useState<Location | null>(null);
@@ -33,33 +32,27 @@ export default function NetworkSignalApp() {
   const [eta, setEta] = useState<string>("");
   const [isHighTraffic, setIsHighTraffic] = useState(false);
 
-  const userLocation = MY_LOCATION;
+  const [userLocation, setUserLocation] = useState<Location | null>();
 
-  // const detector = NetworkSignalDetector({
-  //   onLocationUpdate: setUserLocation,
-  //   onSignalUpdate: setSignalStrength,
-  //   onTowerUpdate: setNearestTower,
-  //   onTrafficUpdate: setIsHighTraffic,
-  //   onRecommendationUpdate: setRecommendedLocation,
-  //   cellTowers,
-  //   trafficAreas,
-  // });
+  const [error, setError] = useState<string | null>(null);
 
-  // Start navigation
-  // const startNavigation = () => {
-  //   if (recommendedLocation && userLocation) {
-  //     setIsNavigating(true);
-  //     const distance = calculateDistance(
-  //       userLocation.lat,
-  //       userLocation.lng,
-  //       recommendedLocation.lat,
-  //       recommendedLocation.lng
-  //     );
-  //     const walkingSpeed = 5; // km/h
-  //     const timeInMinutes = Math.round((distance / walkingSpeed) * 60);
-  //     setEta(`${timeInMinutes} min`);
-  //   }
-  // };
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserLocation({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        (err) => {
+          setError(err.message);
+        }
+      );
+    } else {
+      setError("Geolocation is not supported by your browser.");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-white-to-br from-green-50 to-blue-100 p-4">
@@ -72,16 +65,15 @@ export default function NetworkSignalApp() {
           <h1 className="text-lg font-semibold">
             <span className="text-black-600">Welcome back, Samuel</span>
           </h1>
-        </div> 
-
-        <InteractiveMap
-          userLocation={userLocation}
-          recommendedLocation={recommendedLocation}
-          signalStrength={signalStrength}
-          isNavigating={isNavigating}
-        />
-        
-
+        </div>
+        {userLocation && (
+          <InteractiveMap
+            userLocation={userLocation}
+            recommendedLocation={recommendedLocation}
+            signalStrength={signalStrength}
+            isNavigating={isNavigating}
+          />
+        )}
         <NavBar />
       </div>
     </div>
