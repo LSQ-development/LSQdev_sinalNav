@@ -10,6 +10,7 @@ import { getBestCellTower, getClosestCellTowers } from "@/utils/helper";
 import { Tower } from "@/types/Tower";
 import { Location } from "@/types/Location";
 import { CellTowerCoverage } from "./CellTowerCoverage";
+import { SearchBar } from "./SearchBar";
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -86,9 +87,17 @@ export function InteractiveMap({
   isNavigating,
 }: InteractiveMapProps) {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-  const [towers, setTowers] = useState<Tower[]>([]);
-
+  const [towers, setTowers] = useState<Tower[] | null>([]);
   const [bestTower, setBestTower] = useState<Tower | null>(null);
+
+  const [showSearch, setShowSearch] = useState(false);
+
+  const [noTowers, setNoTowers] = useState<boolean>(false);
+
+  const [searchResult, setSearchResult] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -106,7 +115,6 @@ export function InteractiveMap({
   }, []);
 
   const getAllTowers = async () => {
-
     if (!userLocation) return null;
 
     const latAsString = userLocation?.lat.toString();
@@ -128,7 +136,7 @@ export function InteractiveMap({
       topTowers,
       false
     );
-    
+
     if (best) {
       console.log("Best Recommended Tower:", best.Landmark);
       setBestTower(best);
@@ -136,10 +144,41 @@ export function InteractiveMap({
     }
   };
 
+  const getNoTowers = async () => {
+    const latAsString = "";
+    const lngAsString = "";
+
+    const topTowers = await getClosestCellTowers(latAsString, lngAsString);
+    console.log(topTowers);
+    setNoTowers(true);
+  };
+
+  const handleSearch = (query: string, lat: number, lng: number) => {
+    console.log(`Searching for: ${query}`);
+    console.log(`Coordinates: ${lat}, ${lng}`);
+
+    // Update your user location state to the new coordinates
+    // setUserLocation({
+    //   lat: lat,
+    //   lng: lng,
+    // });
+
+    // // Optional: Clear any existing errors
+    // setError(null);
+
+    // Optional: Hide the search bar after successful search
+    // setShowSearch(false);
+
+    // Optional: Add some feedback to user
+    console.log(`Moved to coordinates: ${lat}, ${lng}`);
+
+    // If you want to show a success message, you could set a success state
+    // setSuccessMessage(`Moved to ${lat}, ${lng}`);
+  };
+
   return (
     <>
-
-   {/* {fetchingFootTraffic && (
+      {/* {fetchingFootTraffic && (
       <Card className="border-orange-200 bg-orange-50">
           <CardContent className="">
             <div className="flex items-center gap-2 text-orange-800">
@@ -165,16 +204,24 @@ export function InteractiveMap({
           </CardContent>
         </Card>
       )}
+
+      {noTowers && (
+        <Card className="border-orange-200 bg-green-50">
+          <CardContent className="">
+            <div className="flex items-center gap-2 text-orange-800">
+              <AlertTriangle className="h-5 w-5" />
+              <span className="font-medium">
+                Minimal Telkom Coverage Detected
+              </span>
+            </div>
+            <p className="text-orange-700 text-sm mt-1">
+              Purchase exclusive roaming data bundles from within our app for
+              your convenience
+            </p>
+          </CardContent>
+        </Card>
+      )}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Interactive Coverage Map
-          </CardTitle>
-          <button className="cursor-pointer" onClick={getAllTowers}>
-            Find Better Service
-          </button>
-        </CardHeader>
         <CardContent>
           <div className="h-96 rounded-lg overflow-hidden">
             {isMapLoaded && userLocation ? (
@@ -184,6 +231,8 @@ export function InteractiveMap({
                 style={{ height: "100%", width: "100%" }}
                 className="rounded-lg"
               >
+                {/* Show SearchBar only when Coverage is pressed */}
+                {showSearch && <SearchBar onSearch={handleSearch} />}
                 <TileLayer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -217,12 +266,6 @@ export function InteractiveMap({
                   icon={redIcon}
                 ></Marker>
               </MapContainer>
-
-            
-
-                 
-
-     
             ) : (
               <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
                 <div className="text-gray-500">Loading interactive map...</div>
@@ -240,11 +283,16 @@ export function InteractiveMap({
           >
             Better Service
           </button>
-          <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded-xl mb-4">
+          <button
+            onClick={() => setShowSearch((prev) => !prev)}
+            className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded-xl mb-4"
+          >
             Coverage
           </button>
+          {showSearch && (
+            <button onClick={getNoTowers}>Determine coverage</button>
+          )}
         </div>
-
       </Card>
     </>
   );
