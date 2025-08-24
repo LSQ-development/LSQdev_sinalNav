@@ -1,10 +1,11 @@
 export interface Tower {
-  "PSC/PCI": number;
-  "Radio Type": string;
+  id: number;
+  PSC: number;
+  Radio_Type: string;
   MCC: number;
   MNC: number;
-  "LAC/TAC": number;
+  LAC: number;
   Longitude: number;
   Latitude: number;
-  "Range (m)": number;
+  Range: number;
 }

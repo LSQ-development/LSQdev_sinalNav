@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
+import { getClosestCellTowers } from "@/utils/helper";
+import { Tower } from "@/types/Tower";
+import { Location } from "@/types/Location";
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -30,22 +33,6 @@ const Polyline = dynamic(
   { ssr: false }
 );
 
-interface Location {
-  lat: number;
-  lng: number;
-}
-
-interface CellTower {
-  id: string;
-  lat: number;
-  lng: number;
-  carrier: string;
-  strength: number;
-  frequency: string;
-  capacity: number;
-  currentLoad: number;
-}
-
 interface SafeLandmark {
   id: string;
   name: string;
@@ -58,23 +45,23 @@ interface SafeLandmark {
 interface InteractiveMapProps {
   userLocation: Location | null;
   recommendedLocation: Location | null;
-  cellTowers: CellTower[];
-  safeLandmarks: SafeLandmark[];
+  // cellTowers: CellTower[];
+  // safeLandmarks: SafeLandmark[];
   signalStrength: number;
-  nearestTower: CellTower | null;
+  // nearestTower: CellTower | null;
   isNavigating: boolean;
 }
 
 export function InteractiveMap({
   userLocation,
   recommendedLocation,
-  cellTowers,
-  safeLandmarks,
+  // safeLandmarks,
   signalStrength,
-  nearestTower,
+  // nearestTower,
   isNavigating,
 }: InteractiveMapProps) {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [towers, setTowers] = useState<Tower[]>([]);
 
   const getNavigationPath = () => {
     if (!userLocation || !recommendedLocation) return [];
@@ -97,9 +84,13 @@ export function InteractiveMap({
         setIsMapLoaded(true);
       }
     };
-
     initializeMap();
   }, []);
+
+  const getTowers = async () => {
+    const topTowers = await getClosestCellTowers();
+    setTowers(topTowers);
+  };
 
   return (
     <Card>
@@ -108,6 +99,9 @@ export function InteractiveMap({
           <MapPin className="h-5 w-5" />
           Interactive Coverage Map
         </CardTitle>
+        <button className="cursor-pointer" onClick={getTowers}>
+          Find Better Service
+        </button>
       </CardHeader>
       <CardContent>
         <div className="h-96 rounded-lg overflow-hidden">
@@ -124,29 +118,19 @@ export function InteractiveMap({
               />
 
               {/* Cell Tower Markers with Coverage Circles */}
-              {cellTowers.map((tower) => {
-                const loadPercentage =
-                  (tower.currentLoad / tower.capacity) * 100;
-                const coverageRadius = (tower.strength / 100) * 1000; // Coverage in meters
-                const circleColor =
-                  loadPercentage > 80
-                    ? "#ef4444"
-                    : loadPercentage > 60
-                    ? "#f59e0b"
-                    : "#10b981";
-
+              {towers.map((tower, index) => {
                 return (
-                  <div key={tower.id}>
+                  <div key={index}>
                     <Circle
-                      center={[tower.lat, tower.lng]}
-                      radius={coverageRadius}
-                      fillColor={circleColor}
+                      center={[tower.Latitude, tower.Longitude]}
+                      radius={5}
+                      fillColor={"000000"}
                       fillOpacity={0.1}
-                      color={circleColor}
+                      color={"FFFFFF"}
                       weight={2}
                     />
-                    <Marker position={[tower.lat, tower.lng]}>
-                      <Popup>
+                    <Marker position={[tower.Latitude, tower.Longitude]}>
+                      {/* <Popup>
                         <div className="text-sm">
                           <div className="font-bold">
                             📡 {tower.carrier} Tower
@@ -156,68 +140,14 @@ export function InteractiveMap({
                           <div>Signal: {tower.strength}%</div>
                           <div>Load: {Math.round(loadPercentage)}%</div>
                         </div>
-                      </Popup>
+                      </Popup> */}
                     </Marker>
                   </div>
                 );
               })}
 
               {/* User Location Marker */}
-              <Marker position={[userLocation.lat, userLocation.lng]}>
-                <Popup>
-                  <div className="text-sm">
-                    <div className="font-bold">👤 Your Location</div>
-                    <div>Signal: {Math.round(signalStrength)}%</div>
-                    {nearestTower && (
-                      <div>Connected to: {nearestTower.carrier}</div>
-                    )}
-                  </div>
-                </Popup>
-              </Marker>
-
-              {/* Recommended Location Marker */}
-              {recommendedLocation && (
-                <Marker
-                  position={[recommendedLocation.lat, recommendedLocation.lng]}
-                >
-                  <Popup>
-                    <div className="text-sm">
-                      <div className="font-bold">⭐ Recommended Location</div>
-                      <div>Better signal expected here</div>
-                      {nearestTower && (
-                        <div>Near {nearestTower.carrier} tower</div>
-                      )}
-                    </div>
-                  </Popup>
-                </Marker>
-              )}
-
-              {/* Navigation Path */}
-              {isNavigating && getNavigationPath().length > 0 && (
-                <Polyline
-                  positions={getNavigationPath() as [number, number][]}
-                  color="#3b82f6"
-                  weight={4}
-                  opacity={0.8}
-                  dashArray="10, 10"
-                />
-              )}
-
-              {/* Safe Landmarks */}
-              {safeLandmarks.map((landmark) => (
-                <Marker
-                  key={landmark.id}
-                  position={[landmark.lat, landmark.lng]}
-                >
-                  <Popup>
-                    <div className="text-sm">
-                      <div className="font-bold">🏢 {landmark.name}</div>
-                      <div>{landmark.type}</div>
-                      <div>Rating: ⭐ {landmark.rating}</div>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
+              <Marker position={[userLocation.lat, userLocation.lng]}></Marker>
             </MapContainer>
           ) : (
             <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
