@@ -8,4 +8,6 @@ export interface Tower {
   Longitude: number;
   Latitude: number;
   Range: number;
+  Landmark?: string;
+  Traffic?: string;
 }
