@@ -57,6 +57,7 @@ const greenIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
 // interface SafeLandmark {
 //   id: string;
 //   name: string;
@@ -87,18 +88,7 @@ export function InteractiveMap({
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [towers, setTowers] = useState<Tower[]>([]);
 
-  const [highTraffic, setHighTraffic] = useState<boolean>(false);
-
   const [bestTower, setBestTower] = useState<Tower | null>(null);
-
-  const getNavigationPath = () => {
-    if (!userLocation || !recommendedLocation) return [];
-
-    return [
-      [userLocation.lat, userLocation.lng],
-      [recommendedLocation.lat, recommendedLocation.lng],
-    ];
-  };
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -116,9 +106,18 @@ export function InteractiveMap({
   }, []);
 
   const getAllTowers = async () => {
-    const topTowers = await getClosestCellTowers();
 
-    setTowers(topTowers);
+    if (!userLocation) return null;
+
+    const latAsString = userLocation?.lat.toString();
+    const lngAsString = userLocation?.lng.toString();
+
+    console.log(latAsString, lngAsString);
+
+    const topTowers = await getClosestCellTowers(
+      userLocation?.lat,
+      userLocation?.lng
+    );
 
     if (!userLocation) {
       console.log("Cannnot find user location");
@@ -141,7 +140,8 @@ export function InteractiveMap({
 
   return (
     <>
-      {/* {fetchingFootTraffic && (
+
+   {/* {fetchingFootTraffic && (
       <Card className="border-orange-200 bg-orange-50">
           <CardContent className="">
             <div className="flex items-center gap-2 text-orange-800">
@@ -180,70 +180,51 @@ export function InteractiveMap({
         <CardContent>
           <div className="h-96 rounded-lg overflow-hidden">
             {isMapLoaded && userLocation ? (
-              <>
-                <MapContainer
-                  center={[userLocation.lat, userLocation.lng]}
-                  zoom={17}
-                  style={{ height: "100%", width: "100%" }}
-                  className="rounded-lg"
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  />
+              <MapContainer
+                center={[userLocation.lat, userLocation.lng]}
+                zoom={17}
+                style={{ height: "100%", width: "100%" }}
+                className="rounded-lg"
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
 
-                  {
-                    !towers && (<>
-                    
-                    </>)
-                  }
+                {/* Cell Tower Markers with Coverage Circles */}
+                {towers?.map((tower, index) => {
+                  return (
+                    <div key={index}>
+                      <CellTowerCoverage tower={tower} isOptimal={false} />
+                      <Marker
+                        position={[tower.Latitude, tower.Longitude]}
+                      ></Marker>
+                    </div>
+                  );
+                })}
 
-                  {/* Cell Tower Markers with Coverage Circles */}
-                  {towers?.map((tower, index) => {
-                    return (
-                      <div key={index}>
-                        <CellTowerCoverage tower={tower} isOptimal={false} />
-                        <Marker position={[tower.Latitude, tower.Longitude]}>
-                          {/* <Popup>
-                        <div className="text-sm">
-                          <div className="font-bold">
-                            📡 {tower.carrier} Tower
-                          </div>
-                          <div>ID: {tower.id}</div>
-                          <div>Frequency: {tower.frequency}</div>
-                          <div>Signal: {tower.strength}%</div>
-                          <div>Load: {Math.round(loadPercentage)}%</div>
-                        </div>
-                      </Popup> */}
-                        </Marker>
+                {bestTower && (
+                  <>
+                    <Marker
+                      position={[bestTower?.Latitude, bestTower?.Longitude]}
+                      icon={greenIcon}
+                    ></Marker>
+                    <CellTowerCoverage tower={bestTower} isOptimal={true} />
+                  </>
+                )}
 
-                        {/* Best Tower Range */}
-                        {bestTower && (
-                          <>
-                            <Marker
-                              position={[
-                                bestTower?.Latitude,
-                                bestTower?.Longitude,
-                              ]}
-                              icon={greenIcon}
-                            ></Marker>
-                            <CellTowerCoverage
-                              tower={bestTower}
-                              isOptimal={true}
-                            />
-                          </>
-                        )}
-                      </div>
-                    );
-                  })}
+                {/* User Location Marker */}
+                <Marker
+                  position={[userLocation.lat, userLocation.lng]}
+                  icon={redIcon}
+                ></Marker>
+              </MapContainer>
 
-                  {/* User Location Marker */}
-                  <Marker
-                    position={[userLocation.lat, userLocation.lng]}
-                    icon={redIcon}
-                  ></Marker>
-                </MapContainer>
-              </>
+            
+
+                 
+
+     
             ) : (
               <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
                 <div className="text-gray-500">Loading interactive map...</div>
@@ -251,6 +232,21 @@ export function InteractiveMap({
             )}
           </div>
         </CardContent>
+
+        <CardHeader></CardHeader>
+
+        <div className="flex justify-center gap-2 m-6">
+          <button
+            className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF]  rounded-xl mb-4"
+            onClick={getAllTowers}
+          >
+            Better Service
+          </button>
+          <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded-xl mb-4">
+            Coverage
+          </button>
+        </div>
+
       </Card>
     </>
   );
