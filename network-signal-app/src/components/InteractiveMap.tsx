@@ -46,6 +46,17 @@ const redIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
+const greenIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
 // interface SafeLandmark {
 //   id: string;
 //   name: string;
@@ -76,18 +87,7 @@ export function InteractiveMap({
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [towers, setTowers] = useState<Tower[]>([]);
 
-  const [highTraffic, setHighTraffic] = useState<boolean>(false);
-
   const [bestTower, setBestTower] = useState<Tower | null>(null);
-
-  const getNavigationPath = () => {
-    if (!userLocation || !recommendedLocation) return [];
-
-    return [
-      [userLocation.lat, userLocation.lng],
-      [recommendedLocation.lat, recommendedLocation.lng],
-    ];
-  };
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -105,7 +105,17 @@ export function InteractiveMap({
   }, []);
 
   const getAllTowers = async () => {
-    const topTowers = await getClosestCellTowers();
+    if (!userLocation) return null;
+
+    const latAsString = userLocation?.lat.toString();
+    const lngAsString = userLocation?.lng.toString();
+
+    console.log(latAsString, lngAsString);
+
+    const topTowers = await getClosestCellTowers(
+      userLocation?.lat,
+      userLocation?.lng
+    );
     setTowers(topTowers);
 
     if (!userLocation) {
@@ -128,6 +138,19 @@ export function InteractiveMap({
 
   return (
     <>
+      {bestTower && (
+        <Card className="border-orange-200 bg-green-50">
+          <CardContent className="">
+            <div className="flex items-center gap-2 text-green-800">
+              <AlertTriangle className="h-5 w-5" />
+              <span className="font-medium">Low Congestion Area Detected</span>
+            </div>
+            <p className="text-green-700 text-sm mt-1">
+              Your strongest network signal is towards {bestTower.Landmark}
+            </p>
+          </CardContent>
+        </Card>
+      )}
       <Card>
         <CardContent>
           <div className="h-96 rounded-lg overflow-hidden">
@@ -144,26 +167,26 @@ export function InteractiveMap({
                 />
 
                 {/* Cell Tower Markers with Coverage Circles */}
-                {towers.map((tower, index) => {
+                {towers?.map((tower, index) => {
                   return (
                     <div key={index}>
-                      <CellTowerCoverage tower={tower} />
-                      <Marker position={[tower.Latitude, tower.Longitude]}>
-                        {/* <Popup>
-                        <div className="text-sm">
-                          <div className="font-bold">
-                            📡 {tower.carrier} Tower
-                          </div>
-                          <div>ID: {tower.id}</div>
-                          <div>Frequency: {tower.frequency}</div>
-                          <div>Signal: {tower.strength}%</div>
-                          <div>Load: {Math.round(loadPercentage)}%</div>
-                        </div>
-                      </Popup> */}
-                      </Marker>
+                      <CellTowerCoverage tower={tower} isOptimal={false} />
+                      <Marker
+                        position={[tower.Latitude, tower.Longitude]}
+                      ></Marker>
                     </div>
                   );
                 })}
+
+                {bestTower && (
+                  <>
+                    <Marker
+                      position={[bestTower?.Latitude, bestTower?.Longitude]}
+                      icon={greenIcon}
+                    ></Marker>
+                    <CellTowerCoverage tower={bestTower} isOptimal={true} />
+                  </>
+                )}
 
                 {/* User Location Marker */}
                 <Marker
@@ -178,21 +201,16 @@ export function InteractiveMap({
             )}
           </div>
         </CardContent>
-        <CardHeader>
-          {/* <CardTitle className="flex items-center gap-2">
-          <MapPin className="h-5 w-5" />
-          Interactive Coverage Map
-        </CardTitle> */}
-        </CardHeader>
+        <CardHeader></CardHeader>
 
         <div className="flex justify-center gap-2 m-6">
           <button
-            className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl mb-4"
+            className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF]  rounded-xl mb-4"
             onClick={getAllTowers}
           >
             Better Service
           </button>
-          <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl mb-4">
+          <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded-xl mb-4">
             Coverage
           </button>
         </div>
