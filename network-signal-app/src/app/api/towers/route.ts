@@ -41,5 +41,5 @@ export async function GET(req: Request) {
     (a: any, b: any) => a.distance - b.distance
   );
 
-  return NextResponse.json(sorted.slice(0, 5));
+  return NextResponse.json(sorted.slice(0, 5).filter((t) => t.MNC === 2));
 }

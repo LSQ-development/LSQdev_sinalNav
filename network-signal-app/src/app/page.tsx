@@ -7,6 +7,7 @@ import { NetworkSignalDetector } from "@/components/NetworkSignalDetector";
 import { SignalStrengthIndicator } from "@/components/SignalStrengthIndicator";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import { MY_LOCATION } from "@/utils/constants";
+import { NavBar } from "@/components/NavBar";
 
 interface Location {
   lat: number;
@@ -32,7 +33,7 @@ export default function NetworkSignalApp() {
   const [eta, setEta] = useState<string>("");
   const [isHighTraffic, setIsHighTraffic] = useState(false);
 
-  const userLocation = MY_LOCATION
+  const userLocation = MY_LOCATION;
 
   // const detector = NetworkSignalDetector({
   //   onLocationUpdate: setUserLocation,
@@ -61,13 +62,18 @@ export default function NetworkSignalApp() {
   // };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-100 p-4">
+    <div className="min-h-screen bg-white-to-br from-green-50 to-blue-100 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
+<<<<<<< HEAD
         <div className="space-y-2">
+=======
+        <div className="">
+>>>>>>> d95138f6357d7287a37d30ac9996eba5a8777c32
           <h1 className="text-3xl font-bold">
             <span className="text-blue-600">my</span>
             <span className="text-green-600">Telkom</span>
           </h1>
+<<<<<<< HEAD
           <h1 className="text-lg font-medium">
             <span>Welcome, Samuel</span>
             <span className="ml-2 wave">👋</span>
@@ -89,6 +95,12 @@ export default function NetworkSignalApp() {
             </CardContent>
           </Card>
         )}
+=======
+          <h1 className="text-lg font-semibold">
+            <span className="text-black-600">Welcome back, Samuel</span>
+          </h1>
+        </div> 
+>>>>>>> d95138f6357d7287a37d30ac9996eba5a8777c32
 
         <InteractiveMap
           userLocation={userLocation}
@@ -96,7 +108,13 @@ export default function NetworkSignalApp() {
           signalStrength={signalStrength}
           isNavigating={isNavigating}
         />
+<<<<<<< HEAD
 
+=======
+        
+
+        <NavBar />
+>>>>>>> d95138f6357d7287a37d30ac9996eba5a8777c32
       </div>
     </div>
   );
