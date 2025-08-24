@@ -64,43 +64,15 @@ export default function NetworkSignalApp() {
   return (
     <div className="min-h-screen bg-white-to-br from-green-50 to-blue-100 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
-<<<<<<< HEAD
-        <div className="space-y-2">
-=======
         <div className="">
->>>>>>> d95138f6357d7287a37d30ac9996eba5a8777c32
           <h1 className="text-3xl font-bold">
             <span className="text-blue-600">my</span>
             <span className="text-green-600">Telkom</span>
           </h1>
-<<<<<<< HEAD
-          <h1 className="text-lg font-medium">
-            <span>Welcome, Samuel</span>
-            <span className="ml-2 wave">👋</span>
-          </h1>
-          {/* <p className="text-gray-600">Direct users to optimal cell towers across South Africa</p> */}
-        </div>
-
-        {isHighTraffic && (
-          <Card className="border-orange-200 bg-orange-50">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-orange-800">
-                <AlertTriangle className="h-5 w-5" />
-                <span className="font-medium">High Traffic Area Detected</span>
-              </div>
-              <p className="text-orange-700 text-sm mt-1">
-                Network congestion expected. Redirecting to less congested
-                towers.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-=======
           <h1 className="text-lg font-semibold">
             <span className="text-black-600">Welcome back, Samuel</span>
           </h1>
         </div> 
->>>>>>> d95138f6357d7287a37d30ac9996eba5a8777c32
 
         <InteractiveMap
           userLocation={userLocation}
@@ -108,13 +80,9 @@ export default function NetworkSignalApp() {
           signalStrength={signalStrength}
           isNavigating={isNavigating}
         />
-<<<<<<< HEAD
-
-=======
         
 
         <NavBar />
->>>>>>> d95138f6357d7287a37d30ac9996eba5a8777c32
       </div>
     </div>
   );
