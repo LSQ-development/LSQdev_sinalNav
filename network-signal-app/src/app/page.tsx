@@ -1,57 +1,59 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { AlertTriangle } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { NetworkSignalDetector } from "@/components/NetworkSignalDetector"
-import { SignalStrengthIndicator } from "@/components/SignalStrengthIndicator"
-import { InteractiveMap } from "@/components/InteractiveMap"
-import { NavigationPanel } from "@/components/NavigationPanel"
-import { SafeLandmarksList } from "@/components/SafeLandmarksList"
-import { CellTowerList } from "@/components/CellTowerList"
+import { useState } from "react";
+import { AlertTriangle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { NetworkSignalDetector } from "@/components/NetworkSignalDetector";
+import { SignalStrengthIndicator } from "@/components/SignalStrengthIndicator";
+import { InteractiveMap } from "@/components/InteractiveMap";
+import { NavigationPanel } from "@/components/NavigationPanel";
+import { SafeLandmarksList } from "@/components/SafeLandmarksList";
+import CellTowerList from "@/components/CellTowerList";
+// import { CellTowerList } from "@/components/CellTowerList"
 
 interface Location {
-  lat: number
-  lng: number
+  lat: number;
+  lng: number;
 }
 
 interface CellTower {
-  id: string
-  lat: number
-  lng: number
-  carrier: string
-  strength: number
-  frequency: string
-  capacity: number
-  currentLoad: number
+  id: string;
+  lat: number;
+  lng: number;
+  carrier: string;
+  strength: number;
+  frequency: string;
+  capacity: number;
+  currentLoad: number;
 }
 
 interface SafeLandmark {
-  id: string
-  name: string
-  type: string
-  lat: number
-  lng: number
-  rating: number
+  id: string;
+  name: string;
+  type: string;
+  lat: number;
+  lng: number;
+  rating: number;
 }
 
 interface TrafficArea {
-  id: string
-  name: string
-  lat: number
-  lng: number
-  congestionLevel: "low" | "medium" | "high"
-  peakHours: string
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  congestionLevel: "low" | "medium" | "high";
+  peakHours: string;
 }
 
 export default function NetworkSignalApp() {
-  const [userLocation, setUserLocation] = useState<Location | null>(null)
-  const [signalStrength, setSignalStrength] = useState(0)
-  const [recommendedLocation, setRecommendedLocation] = useState<Location | null>(null)
-  const [nearestTower, setNearestTower] = useState<CellTower | null>(null)
-  const [isNavigating, setIsNavigating] = useState(false)
-  const [eta, setEta] = useState<string>("")
-  const [isHighTraffic, setIsHighTraffic] = useState(false)
+  const [userLocation, setUserLocation] = useState<Location | null>(null);
+  const [signalStrength, setSignalStrength] = useState(0);
+  const [recommendedLocation, setRecommendedLocation] =
+    useState<Location | null>(null);
+  const [nearestTower, setNearestTower] = useState<CellTower | null>(null);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [eta, setEta] = useState<string>("");
+  const [isHighTraffic, setIsHighTraffic] = useState(false);
 
   const cellTowers: CellTower[] = [
     {
@@ -104,15 +106,50 @@ export default function NetworkSignalApp() {
       capacity: 1100,
       currentLoad: 800,
     },
-  ]
+  ];
 
   const safeLandmarks: SafeLandmark[] = [
-    { id: "1", name: "V&A Waterfront", type: "Shopping Mall", lat: -33.9067, lng: 18.4219, rating: 4.5 },
-    { id: "2", name: "Cape Town Central Library", type: "Library", lat: -33.9249, lng: 18.4241, rating: 4.8 },
-    { id: "3", name: "Canal Walk Shopping Centre", type: "Shopping Mall", lat: -33.8908, lng: 18.5056, rating: 4.2 },
-    { id: "4", name: "Groote Schuur Hospital", type: "Hospital", lat: -33.9391, lng: 18.4316, rating: 4.6 },
-    { id: "5", name: "Cape Town Stadium", type: "Stadium", lat: -33.9034, lng: 18.4108, rating: 4.3 },
-  ]
+    {
+      id: "1",
+      name: "V&A Waterfront",
+      type: "Shopping Mall",
+      lat: -33.9067,
+      lng: 18.4219,
+      rating: 4.5,
+    },
+    {
+      id: "2",
+      name: "Cape Town Central Library",
+      type: "Library",
+      lat: -33.9249,
+      lng: 18.4241,
+      rating: 4.8,
+    },
+    {
+      id: "3",
+      name: "Canal Walk Shopping Centre",
+      type: "Shopping Mall",
+      lat: -33.8908,
+      lng: 18.5056,
+      rating: 4.2,
+    },
+    {
+      id: "4",
+      name: "Groote Schuur Hospital",
+      type: "Hospital",
+      lat: -33.9391,
+      lng: 18.4316,
+      rating: 4.6,
+    },
+    {
+      id: "5",
+      name: "Cape Town Stadium",
+      type: "Stadium",
+      lat: -33.9034,
+      lng: 18.4108,
+      rating: 4.3,
+    },
+  ];
 
   const trafficAreas: TrafficArea[] = [
     {
@@ -139,19 +176,27 @@ export default function NetworkSignalApp() {
       congestionLevel: "high",
       peakHours: "07:30-09:30, 16:30-18:30",
     },
-  ]
+  ];
 
   // Calculate distance between two points
-  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
-    const R = 6371 // Earth's radius in km
-    const dLat = ((lat2 - lat1) * Math.PI) / 180
-    const dLng = ((lng2 - lng1) * Math.PI) / 180
+  const calculateDistance = (
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number
+  ): number => {
+    const R = 6371; // Earth's radius in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) * Math.sin(dLng / 2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    return R * c
-  }
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
 
   const detector = NetworkSignalDetector({
     onLocationUpdate: setUserLocation,
@@ -161,30 +206,34 @@ export default function NetworkSignalApp() {
     onRecommendationUpdate: setRecommendedLocation,
     cellTowers,
     trafficAreas,
-  })
+  });
 
   // Start navigation
   const startNavigation = () => {
     if (recommendedLocation && userLocation) {
-      setIsNavigating(true)
+      setIsNavigating(true);
       const distance = calculateDistance(
         userLocation.lat,
         userLocation.lng,
         recommendedLocation.lat,
-        recommendedLocation.lng,
-      )
-      const walkingSpeed = 5 // km/h
-      const timeInMinutes = Math.round((distance / walkingSpeed) * 60)
-      setEta(`${timeInMinutes} min`)
+        recommendedLocation.lng
+      );
+      const walkingSpeed = 5; // km/h
+      const timeInMinutes = Math.round((distance / walkingSpeed) * 60);
+      setEta(`${timeInMinutes} min`);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-100 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">SA Network Provider Portal</h1>
-          <p className="text-gray-600">Direct users to optimal cell towers across South Africa</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            SA Network Provider Portal
+          </h1>
+          <p className="text-gray-600">
+            Direct users to optimal cell towers across South Africa
+          </p>
         </div>
 
         {isHighTraffic && (
@@ -195,15 +244,17 @@ export default function NetworkSignalApp() {
                 <span className="font-medium">High Traffic Area Detected</span>
               </div>
               <p className="text-orange-700 text-sm mt-1">
-                Network congestion expected. Redirecting to less congested towers.
+                Network congestion expected. Redirecting to less congested
+                towers.
               </p>
             </CardContent>
           </Card>
         )}
 
+        {/* <CellTowerList /> */}
         <CellTowerList />
 
-{/* 
+        {/* 
         <SignalStrengthIndicator
           signalStrength={signalStrength}
           nearestTower={nearestTower}
@@ -233,8 +284,7 @@ export default function NetworkSignalApp() {
         <SafeLandmarksList safeLandmarks={safeLandmarks} />
 
         {/* <CellTowerList cellTowers={cellTowers} /> */}
-        
       </div>
     </div>
-  )
+  );
 }
