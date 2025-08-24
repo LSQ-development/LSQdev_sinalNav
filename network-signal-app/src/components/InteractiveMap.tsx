@@ -155,7 +155,7 @@ export function InteractiveMap({
             {isMapLoaded && userLocation ? (
               <MapContainer
                 center={[userLocation.lat, userLocation.lng]}
-                zoom={13}
+                zoom={17}
                 style={{ height: "100%", width: "100%" }}
                 className="rounded-lg"
               >
