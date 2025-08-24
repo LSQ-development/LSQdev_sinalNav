@@ -112,10 +112,7 @@ export function InteractiveMap({
 
     console.log(latAsString, lngAsString);
 
-    const topTowers = await getClosestCellTowers(
-      userLocation?.lat,
-      userLocation?.lng
-    );
+    const topTowers = await getClosestCellTowers(latAsString, lngAsString);
     setTowers(topTowers);
 
     if (!userLocation) {
