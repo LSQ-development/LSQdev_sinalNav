@@ -1,51 +1,68 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { MapPin } from "lucide-react"
-import dynamic from "next/dynamic"
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MapPin } from "lucide-react";
+import dynamic from "next/dynamic";
 
 // Dynamically import Leaflet components to avoid SSR issues
-const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false })
-const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false })
-const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), { ssr: false })
-const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false })
-const Circle = dynamic(() => import("react-leaflet").then((mod) => mod.Circle), { ssr: false })
-const Polyline = dynamic(() => import("react-leaflet").then((mod) => mod.Polyline), { ssr: false })
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
+  ssr: false,
+});
+const Circle = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Circle),
+  { ssr: false }
+);
+const Polyline = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Polyline),
+  { ssr: false }
+);
 
 interface Location {
-  lat: number
-  lng: number
+  lat: number;
+  lng: number;
 }
 
 interface CellTower {
-  id: string
-  lat: number
-  lng: number
-  carrier: string
-  strength: number
-  frequency: string
-  capacity: number
-  currentLoad: number
+  id: string;
+  lat: number;
+  lng: number;
+  carrier: string;
+  strength: number;
+  frequency: string;
+  capacity: number;
+  currentLoad: number;
 }
 
 interface SafeLandmark {
-  id: string
-  name: string
-  type: string
-  lat: number
-  lng: number
-  rating: number
+  id: string;
+  name: string;
+  type: string;
+  lat: number;
+  lng: number;
+  rating: number;
 }
 
 interface InteractiveMapProps {
-  userLocation: Location | null
-  recommendedLocation: Location | null
-  cellTowers: CellTower[]
-  safeLandmarks: SafeLandmark[]
-  signalStrength: number
-  nearestTower: CellTower | null
-  isNavigating: boolean
+  userLocation: Location | null;
+  recommendedLocation: Location | null;
+  cellTowers: CellTower[];
+  safeLandmarks: SafeLandmark[];
+  signalStrength: number;
+  nearestTower: CellTower | null;
+  isNavigating: boolean;
 }
 
 export function InteractiveMap({
@@ -57,32 +74,32 @@ export function InteractiveMap({
   nearestTower,
   isNavigating,
 }: InteractiveMapProps) {
-  const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   const getNavigationPath = () => {
-    if (!userLocation || !recommendedLocation) return []
+    if (!userLocation || !recommendedLocation) return [];
 
     return [
       [userLocation.lat, userLocation.lng],
       [recommendedLocation.lat, recommendedLocation.lng],
-    ]
-  }
+    ];
+  };
 
   useEffect(() => {
     const initializeMap = async () => {
       if (typeof window !== "undefined") {
         // Import Leaflet CSS dynamically
-        const link = document.createElement("link")
-        link.rel = "stylesheet"
-        link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        document.head.appendChild(link)
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+        document.head.appendChild(link);
 
-        setIsMapLoaded(true)
+        setIsMapLoaded(true);
       }
-    }
+    };
 
-    initializeMap()
-  }, [])
+    initializeMap();
+  }, []);
 
   return (
     <Card>
@@ -108,9 +125,15 @@ export function InteractiveMap({
 
               {/* Cell Tower Markers with Coverage Circles */}
               {cellTowers.map((tower) => {
-                const loadPercentage = (tower.currentLoad / tower.capacity) * 100
-                const coverageRadius = (tower.strength / 100) * 1000 // Coverage in meters
-                const circleColor = loadPercentage > 80 ? "#ef4444" : loadPercentage > 60 ? "#f59e0b" : "#10b981"
+                const loadPercentage =
+                  (tower.currentLoad / tower.capacity) * 100;
+                const coverageRadius = (tower.strength / 100) * 1000; // Coverage in meters
+                const circleColor =
+                  loadPercentage > 80
+                    ? "#ef4444"
+                    : loadPercentage > 60
+                    ? "#f59e0b"
+                    : "#10b981";
 
                 return (
                   <div key={tower.id}>
@@ -125,7 +148,9 @@ export function InteractiveMap({
                     <Marker position={[tower.lat, tower.lng]}>
                       <Popup>
                         <div className="text-sm">
-                          <div className="font-bold">📡 {tower.carrier} Tower</div>
+                          <div className="font-bold">
+                            📡 {tower.carrier} Tower
+                          </div>
                           <div>ID: {tower.id}</div>
                           <div>Frequency: {tower.frequency}</div>
                           <div>Signal: {tower.strength}%</div>
@@ -134,7 +159,7 @@ export function InteractiveMap({
                       </Popup>
                     </Marker>
                   </div>
-                )
+                );
               })}
 
               {/* User Location Marker */}
@@ -143,19 +168,25 @@ export function InteractiveMap({
                   <div className="text-sm">
                     <div className="font-bold">👤 Your Location</div>
                     <div>Signal: {Math.round(signalStrength)}%</div>
-                    {nearestTower && <div>Connected to: {nearestTower.carrier}</div>}
+                    {nearestTower && (
+                      <div>Connected to: {nearestTower.carrier}</div>
+                    )}
                   </div>
                 </Popup>
               </Marker>
 
               {/* Recommended Location Marker */}
               {recommendedLocation && (
-                <Marker position={[recommendedLocation.lat, recommendedLocation.lng]}>
+                <Marker
+                  position={[recommendedLocation.lat, recommendedLocation.lng]}
+                >
                   <Popup>
                     <div className="text-sm">
                       <div className="font-bold">⭐ Recommended Location</div>
                       <div>Better signal expected here</div>
-                      {nearestTower && <div>Near {nearestTower.carrier} tower</div>}
+                      {nearestTower && (
+                        <div>Near {nearestTower.carrier} tower</div>
+                      )}
                     </div>
                   </Popup>
                 </Marker>
@@ -163,12 +194,21 @@ export function InteractiveMap({
 
               {/* Navigation Path */}
               {isNavigating && getNavigationPath().length > 0 && (
-                <Polyline positions={getNavigationPath() as [number, number][]} color="#3b82f6" weight={4} opacity={0.8} dashArray="10, 10" />
+                <Polyline
+                  positions={getNavigationPath() as [number, number][]}
+                  color="#3b82f6"
+                  weight={4}
+                  opacity={0.8}
+                  dashArray="10, 10"
+                />
               )}
 
               {/* Safe Landmarks */}
               {safeLandmarks.map((landmark) => (
-                <Marker key={landmark.id} position={[landmark.lat, landmark.lng]}>
+                <Marker
+                  key={landmark.id}
+                  position={[landmark.lat, landmark.lng]}
+                >
                   <Popup>
                     <div className="text-sm">
                       <div className="font-bold">🏢 {landmark.name}</div>
@@ -187,5 +227,5 @@ export function InteractiveMap({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
