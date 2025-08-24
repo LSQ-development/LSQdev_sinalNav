@@ -1,6 +1,7 @@
 export const OPENCELLID_API_KEY = "pk.58031a1d056c97272be962d494a9e6e3";
-export const lat = -33.931782;
-export const lon = 18.627961;
+// export const lat = -33.931782;
+// export const lon = 18.627961;
+export const MY_LOCATION = { lat: -33.931782, lng: 18.627961 };
 
 export const MCC = 655;
 export const MNC = 0o2;

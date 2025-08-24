@@ -16,3 +16,11 @@ export const calculateDistance = (
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in km
 };
+
+export const getClosestCellTowers = async () => {
+  const res = await fetch(`/api/towers?lat=-33.931782&lon=18.627961`);
+
+  const data = await res.json();
+  console.log(data);
+  return data;
+};
