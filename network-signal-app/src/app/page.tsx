@@ -7,6 +7,7 @@ import { NetworkSignalDetector } from "@/components/NetworkSignalDetector";
 import { SignalStrengthIndicator } from "@/components/SignalStrengthIndicator";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import { MY_LOCATION } from "@/utils/constants";
+import { NavBar } from "@/components/NavBar";
 
 interface Location {
   lat: number;
@@ -61,7 +62,7 @@ export default function NetworkSignalApp() {
   // };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-100 p-4">
+    <div className="min-h-screen bg-white-to-br from-green-50 to-blue-100 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="">
           <h1 className="text-3xl font-bold">
@@ -79,6 +80,9 @@ export default function NetworkSignalApp() {
           signalStrength={signalStrength}
           isNavigating={isNavigating}
         />
+        
+
+        <NavBar />
       </div>
     </div>
   );
