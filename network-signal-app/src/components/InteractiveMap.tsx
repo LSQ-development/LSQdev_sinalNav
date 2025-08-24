@@ -43,7 +43,7 @@ const redIcon = new L.Icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize: [41, 41],
 });
 
 // interface SafeLandmark {
@@ -127,28 +127,29 @@ export function InteractiveMap({
   };
 
   return (
-    <Card>
-      <CardContent>
-        <div className="h-96 rounded-lg overflow-hidden">
-          {isMapLoaded && userLocation ? (
-            <MapContainer
-              center={[userLocation.lat, userLocation.lng]}
-              zoom={17}
-              style={{ height: "100%", width: "100%" }}
-              className="rounded-lg"
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
+    <>
+      <Card>
+        <CardContent>
+          <div className="h-96 rounded-lg overflow-hidden">
+            {isMapLoaded && userLocation ? (
+              <MapContainer
+                center={[userLocation.lat, userLocation.lng]}
+                zoom={17}
+                style={{ height: "100%", width: "100%" }}
+                className="rounded-lg"
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
 
-              {/* Cell Tower Markers with Coverage Circles */}
-              {towers.map((tower, index) => {
-                return (
-                  <div key={index}>
-                    <CellTowerCoverage tower={tower} />
-                    <Marker position={[tower.Latitude, tower.Longitude]}>
-                      {/* <Popup>
+                {/* Cell Tower Markers with Coverage Circles */}
+                {towers.map((tower, index) => {
+                  return (
+                    <div key={index}>
+                      <CellTowerCoverage tower={tower} />
+                      <Marker position={[tower.Latitude, tower.Longitude]}>
+                        {/* <Popup>
                         <div className="text-sm">
                           <div className="font-bold">
                             📡 {tower.carrier} Tower
@@ -164,38 +165,38 @@ export function InteractiveMap({
                   );
                 })}
 
-              {/* User Location Marker */}
-              <Marker
-                position={[userLocation.lat, userLocation.lng]}
-                icon={redIcon}
-              ></Marker>
-            </MapContainer>
-          ) : (
-            <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
-              <div className="text-gray-500">Loading interactive map...</div>
-            </div>
-          )}
-        </div>
-      </CardContent>
-      <CardHeader>
-        {/* <CardTitle className="flex items-center gap-2">
+                {/* User Location Marker */}
+                <Marker
+                  position={[userLocation.lat, userLocation.lng]}
+                  icon={redIcon}
+                ></Marker>
+              </MapContainer>
+            ) : (
+              <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="text-gray-500">Loading interactive map...</div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+        <CardHeader>
+          {/* <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5" />
           Interactive Coverage Map
         </CardTitle> */}
-      </CardHeader>
+        </CardHeader>
 
-      <div className="flex justify-center gap-2 m-6">
-        <button
-          className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl mb-4"
-          onClick={getTowers}
-        >
-          Better Service
-        </button>
-        <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl mb-4">
-          Coverage
-        </button>
-      </div>
-    </Card>
+        <div className="flex justify-center gap-2 m-6">
+          <button
+            className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl mb-4"
+            onClick={getAllTowers}
+          >
+            Better Service
+          </button>
+          <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl mb-4">
+            Coverage
+          </button>
+        </div>
+      </Card>
     </>
   );
 }
