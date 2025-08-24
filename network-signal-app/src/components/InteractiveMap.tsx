@@ -1,5 +1,6 @@
 "use client";
 
+import L from "leaflet"
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, MapPin } from "lucide-react";
@@ -7,6 +8,8 @@ import dynamic from "next/dynamic";
 import { getBestCellTower, getClosestCellTowers } from "@/utils/helper";
 import { Tower } from "@/types/Tower";
 import { Location } from "@/types/Location";
+import { CellTowerCoverage } from "./CellTowerCoverage";
+
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -32,6 +35,24 @@ const Polyline = dynamic(
   () => import("react-leaflet").then((mod) => mod.Polyline),
   { ssr: false }
 );
+
+const redIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+})
+
+const redIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+})
 
 // interface SafeLandmark {
 //   id: string;
@@ -152,20 +173,13 @@ export function InteractiveMap({
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
 
-                {/* Cell Tower Markers with Coverage Circles */}
-                {towers.map((tower, index) => {
-                  return (
-                    <div key={index}>
-                      <Circle
-                        center={[tower.Latitude, tower.Longitude]}
-                        radius={5}
-                        fillColor={"000000"}
-                        fillOpacity={0.1}
-                        color={"FFFFFF"}
-                        weight={2}
-                      />
-                      <Marker position={[tower.Latitude, tower.Longitude]}>
-                        {/* <Popup>
+              {/* Cell Tower Markers with Coverage Circles */}
+              {towers.map((tower, index) => {
+                return (
+                  <div key={index}>
+                    <CellTowerCoverage tower={tower} />
+                    <Marker position={[tower.Latitude, tower.Longitude]}>
+                      {/* <Popup>
                         <div className="text-sm">
                           <div className="font-bold">
                             📡 {tower.carrier} Tower
@@ -181,19 +195,16 @@ export function InteractiveMap({
                   );
                 })}
 
-                {/* User Location Marker */}
-                <Marker
-                  position={[userLocation.lat, userLocation.lng]}
-                ></Marker>
-              </MapContainer>
-            ) : (
-              <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
-                <div className="text-gray-500">Loading interactive map...</div>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    </>
+              {/* User Location Marker */}
+              <Marker position={[userLocation.lat, userLocation.lng]} icon={redIcon}></Marker>
+            </MapContainer>
+          ) : (
+            <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
+              <div className="text-gray-500">Loading interactive map...</div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
