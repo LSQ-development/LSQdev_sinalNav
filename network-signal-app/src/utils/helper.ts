@@ -64,6 +64,7 @@ export const getBestCellTower = (
 
   // Step 1: prioritise Telkom towers (MNC = 2)
   candidates = candidates.filter((t) => t.MNC === 2);
+
   if (!isRoaming && candidates.length === 0) return null;
 
   // Step 2: scoring
