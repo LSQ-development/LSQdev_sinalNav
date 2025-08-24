@@ -74,7 +74,7 @@ export default function NetworkSignalApp() {
           <p className="text-gray-600">
             Direct users to optimal cell towers across South Africa
           </p>
-        </div> */}
+        </div> 
 
         <InteractiveMap
           userLocation={userLocation}
