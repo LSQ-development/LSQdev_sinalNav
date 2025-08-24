@@ -163,14 +163,14 @@ export function InteractiveMap({
         </CardTitle> */}
       </CardHeader>
 
-      <div className="flex justify-center gap-2 mt-2 mb-4">
+      <div className="flex justify-center gap-2 m-6">
         <button
-          className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl m-2"
+          className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl mb-4"
           onClick={getTowers}
         >
           Better Service
         </button>
-        <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl m-2">
+        <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl mb-4">
           Coverage
         </button>
       </div>
