@@ -32,7 +32,7 @@ export default function NetworkSignalApp() {
   const [eta, setEta] = useState<string>("");
   const [isHighTraffic, setIsHighTraffic] = useState(false);
 
-  const userLocation = MY_LOCATION
+  const userLocation = MY_LOCATION;
 
   // const detector = NetworkSignalDetector({
   //   onLocationUpdate: setUserLocation,
@@ -63,29 +63,14 @@ export default function NetworkSignalApp() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-100 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="text-center space-y-2">
+        {/* <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-gray-900">
             SA Network Provider Portal
           </h1>
           <p className="text-gray-600">
             Direct users to optimal cell towers across South Africa
           </p>
-        </div>
-
-        {isHighTraffic && (
-          <Card className="border-orange-200 bg-orange-50">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-orange-800">
-                <AlertTriangle className="h-5 w-5" />
-                <span className="font-medium">High Traffic Area Detected</span>
-              </div>
-              <p className="text-orange-700 text-sm mt-1">
-                Network congestion expected. Redirecting to less congested
-                towers.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        </div> */}
 
         <InteractiveMap
           userLocation={userLocation}
