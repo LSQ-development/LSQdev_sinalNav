@@ -1,6 +1,6 @@
 "use client";
 
-import L from "leaflet"
+import L from "leaflet";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
@@ -9,7 +9,6 @@ import { getClosestCellTowers } from "@/utils/helper";
 import { Tower } from "@/types/Tower";
 import { Location } from "@/types/Location";
 import { CellTowerCoverage } from "./CellTowerCoverage";
-
 
 // Dynamically import Leaflet components to avoid SSR issues
 const MapContainer = dynamic(
@@ -37,13 +36,15 @@ const Polyline = dynamic(
 );
 
 const redIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-})
+  shadowSize: [41, 41],
+});
 
 interface SafeLandmark {
   id: string;
@@ -106,15 +107,6 @@ export function InteractiveMap({
 
   return (
     <Card>
-       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MapPin className="h-5 w-5" />
-          Interactive Coverage Map
-        </CardTitle>
-        <button className="cursor-pointer" onClick={getTowers}>
-          Find Better Service
-        </button>
-      </CardHeader>
       <CardContent>
         <div className="h-96 rounded-lg overflow-hidden">
           {isMapLoaded && userLocation ? (
@@ -152,7 +144,10 @@ export function InteractiveMap({
               })}
 
               {/* User Location Marker */}
-              <Marker position={[userLocation.lat, userLocation.lng]} icon={redIcon}></Marker>
+              <Marker
+                position={[userLocation.lat, userLocation.lng]}
+                icon={redIcon}
+              ></Marker>
             </MapContainer>
           ) : (
             <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
@@ -161,6 +156,24 @@ export function InteractiveMap({
           )}
         </div>
       </CardContent>
+      <CardHeader>
+        {/* <CardTitle className="flex items-center gap-2">
+          <MapPin className="h-5 w-5" />
+          Interactive Coverage Map
+        </CardTitle> */}
+      </CardHeader>
+
+      <div className="flex justify-center gap-2 mt-2 mb-4">
+        <button
+          className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl m-2"
+          onClick={getTowers}
+        >
+          Better Service
+        </button>
+        <button className="cursor-pointer bg-[#0A8DDF] hover:bg-[#A6E3FF] text-white font-bold py-2 px-4 border-b-4 border-[#0A8DDF] rounded rounded-xl m-2">
+          Coverage
+        </button>
+      </div>
     </Card>
   );
 }
