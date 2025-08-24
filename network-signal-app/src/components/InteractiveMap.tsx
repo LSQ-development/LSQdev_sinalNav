@@ -1,6 +1,7 @@
 "use client";
 
 import L from "leaflet";
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, MapPin } from "lucide-react";
@@ -105,6 +106,7 @@ export function InteractiveMap({
   }, []);
 
   const getAllTowers = async () => {
+
     if (!userLocation) return null;
 
     const latAsString = userLocation?.lat.toString();
@@ -116,7 +118,6 @@ export function InteractiveMap({
       userLocation?.lat,
       userLocation?.lng
     );
-    setTowers(topTowers);
 
     if (!userLocation) {
       console.log("Cannnot find user location");
@@ -129,6 +130,7 @@ export function InteractiveMap({
       topTowers,
       false
     );
+    
     if (best) {
       console.log("Best Recommended Tower:", best.Landmark);
       setBestTower(best);
@@ -138,6 +140,20 @@ export function InteractiveMap({
 
   return (
     <>
+
+   {/* {fetchingFootTraffic && (
+      <Card className="border-orange-200 bg-orange-50">
+          <CardContent className="">
+            <div className="flex items-center gap-2 text-orange-800">
+              <AlertTriangle className="h-5 w-5" />
+              <span className="font-medium">High Traffic Area Detected</span>
+            </div>
+            <p className="text-orange-700 text-sm mt-1">
+              Network congestion detected. Redirecting to less congested towers.
+            </p>
+          </CardContent>
+        </Card>
+    )} */}
       {bestTower && (
         <Card className="border-orange-200 bg-green-50">
           <CardContent className="">
@@ -152,6 +168,15 @@ export function InteractiveMap({
         </Card>
       )}
       <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Interactive Coverage Map
+          </CardTitle>
+          <button className="cursor-pointer" onClick={getAllTowers}>
+            Find Better Service
+          </button>
+        </CardHeader>
         <CardContent>
           <div className="h-96 rounded-lg overflow-hidden">
             {isMapLoaded && userLocation ? (
@@ -194,6 +219,12 @@ export function InteractiveMap({
                   icon={redIcon}
                 ></Marker>
               </MapContainer>
+
+            
+
+                 
+
+     
             ) : (
               <div className="h-full bg-gray-100 rounded-lg flex items-center justify-center">
                 <div className="text-gray-500">Loading interactive map...</div>
@@ -201,6 +232,7 @@ export function InteractiveMap({
             )}
           </div>
         </CardContent>
+
         <CardHeader></CardHeader>
 
         <div className="flex justify-center gap-2 m-6">
@@ -214,6 +246,7 @@ export function InteractiveMap({
             Coverage
           </button>
         </div>
+
       </Card>
     </>
   );
