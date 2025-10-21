@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import dynamic from "next/dynamic"
@@ -210,5 +210,5 @@ export default function InsiteApp() {
         </div>
       )}
     </div>
-  )
+  );
 }
